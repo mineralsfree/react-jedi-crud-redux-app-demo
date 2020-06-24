@@ -5,17 +5,21 @@ import {nanoid} from "nanoid";
 
 
 import {peopleColumns} from "../services/peopleService";
+import {useDispatch, useSelector} from "react-redux";
+import {getAllPeople} from "../store/selectors/people";
+import { setPeople} from "../store/actions/people";
 
 const initialPersonData = peopleColumns.reduce((columns, columnName) => {
     columns[columnName] = '';
     return columns;
 }, {})
 
-const PeopleForm = ({setPeople, people, history, match}) => {
+const PeopleForm = ({ history, match}) => {
+    const dispatch = useDispatch();
     const [formErrors, setFormErrors] = useState({});
     const [personData, setPersonData] = useState({...initialPersonData});
     const [editMode, setEditMode] = useState(false);
-
+    const people = useSelector(state => getAllPeople(state));
     useEffect(() => {
         const personId = match.params.id;
         if (personId === "new") return;
@@ -45,9 +49,9 @@ const PeopleForm = ({setPeople, people, history, match}) => {
 
         if (editMode) {
             const newPeopleList = people.map(person => person.id === personData.id ? personData : person);
-            setPeople(newPeopleList)
+            dispatch(setPeople(newPeopleList))
         } else {
-            setPeople( people, {...personData, beloved: false, id: nanoid()});
+            dispatch(setPeople([...people, {...personData, beloved: false, id: nanoid()}]))
         }
         history.push('/')
     }

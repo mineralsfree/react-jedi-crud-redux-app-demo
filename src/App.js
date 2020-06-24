@@ -12,15 +12,12 @@ import NotFound from "./components/common/NotFound";
 import {getPeople} from "./services/peopleService";
 import { useDispatch } from 'react-redux';
 import { setPeople } from './store/actions/people';
+import {getPlanets} from "./services/planetsService";
+import {setPlanets} from "./store/actions/planets";
+import {PlanetForm} from "./components/pages/PlanetForm";
 
 
 // for intro/learning purposes
-const columns = ['First', 'Last', 'Handle']
-const data = [
-    {first: 'Mark', last: 'Otto', handle: '@motto', id: '1'},
-    {first: 'Carl', last: 'Reno', handle: '@ceno', id: '2'},
-    {first: 'Steve', last: 'Smith', handle: '@ssteve', id: '3'}
-]
 //
 
 function App() {
@@ -29,9 +26,10 @@ function App() {
     useEffect(() => {
         async function fetchData() {
             const peopleResponse = await getPeople()
+            const planetsResponse = await getPlanets()
             dispatch(setPeople(peopleResponse));
+            dispatch(setPlanets(planetsResponse))
         }
-
         fetchData()
     }, [])
 
@@ -43,7 +41,7 @@ function App() {
                     <Route path="/people/:id" render={props =>
                         <PeopleForm {...props}  />}/>
                     <Route path="/people" render={props => <PeoplePage {...props} />} />
-                    {/*<Route path="/planets/:id" component={Form}/>*/}
+                    <Route path="/planets/:id" component={PlanetForm}/>
                     <Route path="/planets" component={PlanetsPage}/>
                     {/*<Route path="/starships/:id" component={Form}/>*/}
                     <Route path="/starships" component={StarshipsPage}/>
